@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Tecnico Informatico - Vittorio Rocca</title>
+    <!-- Caricamento di Tailwind CSS e Font Inter -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Stile personalizzato per transizioni e animazioni */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Grigio chiarissimo di base */
+            overflow-x: hidden;
+        }
+
+        /* Sfondo gradiente dell'eroe per un look professionale */
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0c4a6e 100%);
+        }
+        
+        /* Animazione al passaggio del mouse per le card delle competenze */
+        .skill-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Keyframes per l'animazione di entrata del titolo */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animazione per le barre delle competenze */
+        .skill-bar {
+            width: 0;
+            transition: width 1.5s ease-out;
+            opacity: 0;
+        }
+
+        /* Rivelazione (usata da JS) */
+        .skill-bar.reveal {
+            opacity: 1;
+        }
+
+        /* Animazione per i cerchi del Service Desk */
+        @keyframes pulse-dot {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.5); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        .pulse-dot {
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
+        
+        /* Stile specifico per il pulsante WhatsApp */
+        .whatsapp-button {
+            background-color: #25D366; /* Verde WhatsApp */
+            color: white;
+            padding: 0.75rem 2rem; /* py-3 px-8 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 700; /* font-bold */
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .whatsapp-button:hover {
+            background-color: #128C7E;
+            transform: scale(1.05);
+        }
+
+        /* Stili per il Modal/Message Box */
+        #modal-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        #modal-message.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Message Box (Modal) -->
+    <div id="modal-message" class="bg-blue-600 text-white p-4 rounded-lg shadow-2xl max-w-sm" role="alert">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="modal-text" class="font-medium"></span>
+        </div>
+    </div>
+
+    <header class="hero-gradient text-white py-16 md:py-24 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <!-- Animazione di entrata -->
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4" style="animation: fadeIn 1s ease-out;">
+                Vittorio Rocca
+            </h1>
+            <p class="text-xl md:text-3xl font-light opacity-0" style="animation: fadeIn 1.5s ease-out 0.2s forwards;">
+                Tecnico IT | Specialista in Identity Management & Endpoint Security
+            </p>
+            
+            <!-- Pulsanti CTA aggiornati: Competenze + WhatsApp -->
+            <div class="mt-8 flex justify-center space-x-4 opacity-0" style="animation: fadeIn 1.5s ease-out 0.4s forwards;">
+                <a href="#competence" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 shadow-lg">
+                    Le mie Competenze
+                </a>
+                
+                <!-- NUOVO PULSANTE WHATSAPP -->
+                <a href="https://wa.me/393884669873?text=Ciao%20Vittorio,%20ho%20visto%20il%20tuo%20portfolio%20tecnico%20e%20vorrei%20contattarti!" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="whatsapp-button">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 3.189 1.488 6.046 3.82 7.828l-1.028 3.79 3.918-1.026A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm3.62 12.35l-.105-.183c-.156-.271-.43-.404-.707-.404h-.001c-.276 0-.548.133-.705.404l-.845 1.474c-.05.087-.14.131-.235.131s-.186-.044-.235-.131l-1.423-2.477c-.11-.19-.307-.306-.52-.306s-.41.116-.52.306l-1.424 2.477c-.05.087-.14.131-.235.131s-.186-.044-.235-.131l-.844-1.474c-.156-.271-.43-.404-.706-.404h-.001c-.277 0-.55.133-.707.404l-.104.183c-.278.48-.158 1.074.322 1.352l1.328.767c.063.037.135.055.207.055s.144-.018.207-.055l1.423-.82c.18-.104.394-.104.573 0l1.424.82c.063.037.135.055.207.055s.144-.018.207-.055l1.328-.767c.48-.278.6-.872.322-1.352zM12 4c4.418 0 8 3.582 8 8 0 1.94-.68 3.73-1.83 5.148l.245.908-1.745-.458c-.52-.136-1.076-.207-1.631-.207-4.418 0-8-3.582-8-8s3.582-8 8-8z"/></svg>
+                    Contattami su WhatsApp
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sezione 1: Competenze Tecniche (Skills) -->
+        <section id="competence" class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-900 text-center mb-12 border-b-2 border-yellow-400 pb-2">
+                    Competenze Tecniche & Strumenti Aziendali
+                </h2>
+                
+                <div class="space-y-10">
+                    <!-- Gruppo 1: Identity, Cloud & Infrastructure -->
+                    <h3 class="text-2xl font-semibold text-blue-800 border-l-4 border-blue-400 pl-4 py-1">Identity, Cloud & Infrastructure</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="90">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Active Directory (GPO, User Lifecycle, Abilitazioni)</span>
+                                <span class="text-sm font-bold text-blue-600">90%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-blue-600" data-target-width="90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="85">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Exchange & M365 Management (Permessi, Tracciamento Posta)</span>
+                                <span class="text-sm font-bold text-blue-600">85%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-blue-600" data-target-width="85%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="70">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Azure Identity & Licensing (Utenze Guest, Assegnazione Licenze)</span>
+                                <span class="text-sm font-bold text-blue-600">70%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-blue-600" data-target-width="70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="80">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Networking Fundamentals (TCP/IP, DNS, DHCP)</span>
+                                <span class="text-sm font-bold text-blue-600">80%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-blue-600" data-target-width="80%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gruppo 2: Endpoint, Security & Service Delivery -->
+                    <h3 class="text-2xl font-semibold text-red-800 border-l-4 border-red-400 pl-4 py-1 mt-12">Endpoint, Security & Service Delivery</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="95">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Troubleshooting (Software, Applicazioni, Periferiche)</span>
+                                <span class="text-sm font-bold text-red-600">95%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-red-600" data-target-width="95%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="80">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Gestione Mobile (iOS / Android)</span>
+                                <span class="text-sm font-bold text-red-600">80%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-red-600" data-target-width="80%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="75">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Gestione Credenziali Privilegiate (CyberArk)</span>
+                                <span class="text-sm font-bold text-red-600">75%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-red-600" data-target-width="75%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300" data-skill-level="85">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Manutenzione Hardware (Swap componenti PC/Laptop)</span>
+                                <span class="text-sm font-bold text-red-600">85%</span>
+                            </div>
+                            <div class="h-2 bg-gray-300 rounded-full">
+                                <div class="skill-bar h-full rounded-full bg-red-600" data-target-width="85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- GRUPPO AGGIORNATO: Piattaforme, OS & Strumenti Specialistici -->
+                    <h3 class="text-2xl font-semibold text-green-800 border-l-4 border-green-400 pl-4 py-1 mt-12">Piattaforme, OS & Strumenti Specialistici</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card Windows (Base AD/M365) -->
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Microsoft Windows (Client & Server OS)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">Livello: Esperto</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">AD/M365</span>
+                            </div>
+                        </div>
+                        <!-- Card Apple/Mac -->
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Apple MacOS & iOS (Configurazione Avanzata)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">Livello: Avanzato</span>
+                                <span class="text-sm font-bold text-green-600">UEM</span>
+                            </div>
+                        </div>
+                        <!-- Card Linux -->
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Linux CLI/Base (In Apprendimento)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-yellow-200 text-yellow-600">Livello: Base</span>
+                                <span class="text-sm font-bold text-yellow-600">Crescita</span>
+                            </div>
+                        </div>
+                        <!-- Card Intelligent Hub (UEM) -->
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">Intelligent Hub (UEM/MDM - Gestione VMWare)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">UEM</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">MDM</span>
+                            </div>
+                        </div>
+                        <!-- Card CyberArk (PAM) -->
+                        <div class="skill-card bg-gray-50 p-6 rounded-lg shadow-md transition duration-300">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-lg text-gray-700">CyberArk (Privileged Access Management)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">PAM</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-green-200 text-green-600">Security</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione 2: Esperienza Service Desk (Esselunga) -->
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-900 text-center mb-12 border-b-2 border-yellow-400 pb-2">
+                    Focus Operativo: Service Desk Esselunga
+                </h2>
+                
+                <div class="md:flex md:space-x-8 items-center">
+                    <!-- Icona Animata -->
+                    <div class="md:w-1/3 flex justify-center mb-8 md:mb-0">
+                        <div class="relative w-40 h-40 bg-blue-500 rounded-full flex items-center justify-center shadow-2xl">
+                            <!-- L'animazione del dot pulsante -->
+                            <div class="absolute w-full h-full border border-blue-400 rounded-full pulse-dot" style="animation-delay: 0s;"></div>
+                            <div class="absolute w-full h-full border border-blue-400 rounded-full pulse-dot" style="animation-delay: -1s;"></div>
+                            
+                            <!-- Icona Centrale (Cuffie/Supporto) -->
+                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l5-2 2 5zm0 0v1h1m-1 1h1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            <span class="absolute bottom-0 right-0 p-2 text-xs font-bold bg-yellow-400 rounded-full text-gray-900 shadow-md">ITSM L1/L2</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Descrizione Esperienza -->
+                    <div class="md:w-2/3 space-y-4 text-lg text-gray-700">
+                        <p class="font-semibold text-gray-900 text-xl">
+                            Gestione completa del ciclo di vita dell'utente e dell'endpoint in un'organizzazione retail complessa:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li class="hover:text-blue-600 transition duration-150">
+                                **Identity & Access Management:** **Gestisco** la creazione, l'eliminazione e la modifica delle abiliotazioni utente tramite Active Directory e **amministro** utenze guest e licenze software su piattaforma Azure.
+                            </li>
+                            <li class="hover:text-blue-600 transition duration-150">
+                                **Messaging & Collaboration:** **Assicuro** il corretto funzionamento della posta elettronica (On-Prem e Online), **gestendo** permessi, configurazioni e **tracciando** flussi di messaggistica critici tramite Exchange.
+                            </li>
+                            <li class="hover:text-blue-600 transition duration-150">
+                                **Endpoint & Hardware:** **Eseguo** interventi hardware diretti su PC e laptop (swap disco, RAM, batteria, modulo LTE) e **risolvo** problemi software e di rete L1/L2, minimizzando i tempi di inattività.
+                            </li>
+                            <li class="hover:text-blue-600 transition duration-150">
+                                **Security & UEM:** **Utilizzo** CyberArk per la gestione sicura delle password dei portali aziendali e **configuro/manutengo** i dispositivi mobili Apple e Mac attraverso la soluzione UEM Intelligent Hub.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione 3: Cosa Cerco/Portfolio Tecnico - AGGIORNATA QUI -->
+        <section class="py-16 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-900 text-center mb-12 border-b-2 border-yellow-400 pb-2">
+                    Progetti & Ambizione
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card Progetto 1 (PowerShell & Python Automation) - AGGIORNATA -->
+                    <div class="group bg-white rounded-lg shadow-xl overflow-hidden transition duration-300 hover:shadow-2xl hover:border-blue-500 border-4 border-transparent">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition duration-300">
+                                Automation & Scripting
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                PowerShell & Python: Efficienza Operativa
+                            </p>
+                            <p class="text-gray-700">
+                                **Focus:** Approccio metodologico per identificare attività IT ripetitive e sviluppare soluzioni basate su script per l'automazione. Uso principale di **PowerShell** per l'ambiente Microsoft, con apprendimento attivo di **Python** per applicazioni trasversali e web scraping.
+                                <br><br>
+                                *Principio: Automazione delle attività, dal reporting di compliance alla gestione del ciclo di vita utente, per **non ripetere il lavoro manuale (DOP)**.*
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-red-200 text-red-600">PowerShell</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-red-200 text-red-600">Python (Base)</span>
+                            </div>
+                            <button onclick="showProjectDetails('Automation & Scripting')" class="mt-6 text-blue-600 font-medium hover:text-blue-800 transition duration-300 transform group-hover:translate-x-1">
+                                Dettagli →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card Progetto 2 (Cloud Migration) -->
+                    <div class="group bg-white rounded-lg shadow-xl overflow-hidden transition duration-300 hover:shadow-2xl hover:border-blue-500 border-4 border-transparent">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition duration-300">
+                                Simulazione Cloud Migraton
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                Approccio Architetturale
+                            </p>
+                            <p class="text-gray-700">
+                                **Ambizione strategica:** Studio e pianificazione dettagliata di una migrazione parziale (ibrida) di servizi critici (come VPN e soluzioni di Backup) da un ambiente On-Premise a Microsoft Azure.
+                                <br><br>
+                                Questo progetto teorico dimostra la comprensione delle fasi di **Assessment**, **Strategizing (Lift and Shift vs Replatform)** e la definizione di una robusta **Security Posture** (NSG, Firewall) per garantire l'integrità dei dati nel Cloud.
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-blue-200 text-blue-600">Azure</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-blue-200 text-blue-600">Networking</span>
+                            </div>
+                            <button onclick="showProjectDetails('Simulazione Cloud Migration')" class="mt-6 text-blue-600 font-medium hover:text-blue-800 transition duration-300 transform group-hover:translate-x-1">
+                                Dettagli →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card Progetto 3 (Certificazione & Crescita) -->
+                    <div class="group bg-white rounded-lg shadow-xl overflow-hidden transition duration-300 hover:shadow-2xl hover:border-blue-500 border-4 border-transparent">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition duration-300">
+                                Certificazione & Crescita
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                Impegno Attivo
+                            </p>
+                            <p class="text-gray-700">
+                                Attualmente in preparazione per la certificazione **CompTIA Network+** per consolidare le mie competenze sui fondamenti di rete. Il mio obiettivo primario è la crescita professionale continua, guidata da impegno e costante aggiornamento.
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-yellow-200 text-yellow-600">CompTIA</span>
+                                <span class="text-xs font-semibold inline-block py-1 px-3 uppercase rounded-full bg-yellow-200 text-yellow-600">Network+</span>
+                            </div>
+                            <button onclick="showProjectDetails('Certificazione & Crescita')" class="mt-6 text-blue-600 font-medium hover:text-blue-800 transition duration-300 transform group-hover:translate-x-1">
+                                Roadmap →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione 4: Contatti (Sticky Footer) -->
+        <section id="contact" class="bg-gray-800 text-white py-12">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold mb-4">Pronto a portare la mia efficienza al tuo team.</h2>
+                <p class="mb-8 text-lg text-gray-300">Cerco un ruolo in cui le mie capacità di Identity Management, Security e gestione delle infrastrutture possano fare la differenza.</p>
+                <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8">
+                    <!-- Email -->
+                    <p class="flex items-center justify-center text-xl hover:text-yellow-400 transition duration-300">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        vittorio.rocca@outlook.it
+                    </p>
+                    <!-- WhatsApp/Telefono -->
+                    <a href="https://wa.me/393884669873" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="flex items-center justify-center text-xl hover:text-yellow-400 transition duration-300">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        388 466 9873 (WhatsApp)
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Funzione per mostrare un messaggio modale temporaneo
+        function showProjectDetails(projectName) {
+            const modal = document.getElementById('modal-message');
+            const modalText = document.getElementById('modal-text');
+            
+            // Imposta il testo specifico
+            modalText.textContent = `Per i dettagli sul progetto "${projectName}", contattami direttamente!`;
+            
+            // Mostra il modal
+            modal.classList.add('show');
+
+            // Nascondi il modal dopo 3 secondi
+            setTimeout(() => {
+                modal.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Funzione per animare le barre delle competenze quando diventano visibili (On Scroll)
+        function animateSkillBars() {
+            const skillBars = document.querySelectorAll('.skill-bar');
+            skillBars.forEach(bar => {
+                const rect = bar.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+
+                if (isVisible && !bar.classList.contains('reveal')) {
+                    // Animazione della barra
+                    bar.style.width = bar.getAttribute('data-target-width');
+                    bar.classList.add('reveal'); // Impedisce l'animazione ripetuta
+                }
+            });
+        }
+
+        // Aggiungi gli ascoltatori di eventi
+        window.addEventListener('scroll', animateSkillBars);
+        window.addEventListener('resize', animateSkillBars);
+        
+        // Esegui la funzione all'avvio per le barre già visibili
+        window.onload = () => {
+             // Inizializza l'animazione di tutte le barre
+             document.querySelectorAll('.skill-bar').forEach(bar => {
+                bar.style.width = '0'; 
+             });
+             animateSkillBars();
+        };
+
+        // Inizializza l'animazione del titolo e sottotitolo dopo il caricamento
+        document.addEventListener('DOMContentLoaded', () => {
+            const title = document.querySelector('h1');
+            const subtitle = document.querySelector('header p');
+            const ctaButtons = document.querySelector('header div.mt-8');
+
+            if (title) title.style.opacity = 1;
+            if (subtitle) subtitle.style.opacity = 1;
+            if (ctaButtons) ctaButtons.style.opacity = 1;
+        });
+
+    </script>
+</body>
+</html>
